@@ -1,0 +1,70 @@
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+<f:metadata>
+    <f:viewAction action="#{listView.initLoad}" />
+</f:metadata>
+
+
+<f:view>
+
+<h:head>
+	<meta charset="utf-8"></meta>
+	<title>List</title>
+</h:head>
+<h:body>
+
+	<h:form id="form">
+	<h:inputHidden value="#{listView.sort}" />	
+	<h:inputHidden value="#{listView.sortOrder}" /> 
+	<h:inputHidden value="#{listView.currentPage}" />
+	<h:dataTable id="table" value="#{listView.persons}" var="person">
+		<h:column>
+			<f:facet name="header">
+				Surname
+				<c:if test = "#{listView.sort == 'surname' and listView.sortOrder == 'asc' }"><h:commandButton action="#{listView.sortByCol('surname')}" value="V" style="border:0px"><f:ajax execute="@form" render="form" /></h:commandButton></c:if>
+				<c:if test = "#{listView.sort == 'surname' and listView.sortOrder == 'desc' }"><h:commandButton action="#{listView.sortByCol('surname')}" value="^" style="border:0px"><f:ajax execute="@form" render="form" /></h:commandButton></c:if>
+				<c:if test = "#{listView.sort != 'surname' }"><h:commandButton action="#{listView.sortByCol('surname')}" value="&lt;&gt;" style="border:0px"><f:ajax execute="@form" render="form" /></h:commandButton></c:if>
+				<br/>
+				<h:inputText value="#{listView.searchSurname}" />
+			</f:facet>
+			#{person.surname}
+		</h:column>
+		<h:column>
+			<f:facet name="header">
+				Firstname
+				<c:if test = "#{listView.sort == 'firstname' and listView.sortOrder == 'asc' }"><h:commandButton action="#{listView.sortByCol('firstname')}" value="V" style="border:0px"><f:ajax execute="@form" render="form" /></h:commandButton></c:if>
+				<c:if test = "#{listView.sort == 'firstname' and listView.sortOrder == 'desc' }"><h:commandButton action="#{listView.sortByCol('firstname')}" value="^" style="border:0px"><f:ajax execute="@form" render="form" /></h:commandButton></c:if>
+				<c:if test = "#{listView.sort != 'firstname' }"><h:commandButton action="#{listView.sortByCol('firstname')}" value="&lt;&gt;" style="border:0px"><f:ajax execute="@form" render="form" /></h:commandButton></c:if>
+				<br/>
+				<h:inputText value="#{listView.searchFirstname}" />
+			</f:facet>
+			#{person.firstname}
+		</h:column>
+		<h:column><h:outputLink value="view.xhtml?id=#{person.id}">Details</h:outputLink></h:column>
+	</h:dataTable>
+	<h:commandButton value="Search" action="#{listView.search}">
+		<f:ajax execute="@form" render="form" />
+	</h:commandButton>
+	Page:
+	<c:forEach var="pageNo" items="#{listView.pagesArray}">
+		<c:if test = "#{pageNo != listView.currentPage}">
+			<h:commandButton value="#{pageNo}" action="#{listView.switchPage(pageNo)}" style="border:0px">
+				<f:ajax execute="@form" render="form" />
+			</h:commandButton>
+			<span> </span>
+		</c:if>
+		<c:if test = "#{pageNo == listView.currentPage}">
+			#{pageNo}<span> </span>
+		</c:if>
+	</c:forEach>
+	<br/><br/>
+	<h:commandLink action="#{editCtrl.begin(null)}" value="Create Entry" />
+	</h:form>
+</h:body>
+</f:view>
+
+</html>
